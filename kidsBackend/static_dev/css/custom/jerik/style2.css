@@ -1,0 +1,74 @@
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: 'Ubuntu', sans-serif;
+}
+
+li {
+	list-style: none;
+}
+
+body {
+	min-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+/* Reviews Section */
+
+.main__container {
+	max-width: 1484px;
+	margin: 0 auto;
+}
+
+.hero-slider {
+	/* position: absolute; */
+	/* top: 0; */
+	/* left: 0; */
+	margin-top: 10px;
+	width: 500px;
+	height: 100%;
+	z-index: 0;
+}
+
+.hero-slider img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+footer {
+	background: #272a35;
+	/* min-height: 100vh; */
+}
+
+.footer-top {
+	display: flex;
+	justify-content: space-between;
+	padding-top: 50px;
+	padding-bottom: 40px;
+	border-bottom: 1px solid #bcbcbc;
+}
+
+.footer_link {
+	color: #fff;
+}
+
+.footer-top > menu > li > a {
+	color: #fff;
+}
+
+.footer-bottom {
+	display: flex;
+	align-items: center;
+	padding-top: 40px;
+	padding-bottom: 50px;
+}
+
+.footer-bottom > p {
+	flex: 1;
+	color: white;
+}

@@ -21,9 +21,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "ABOBA")
 
 DEBUG = true_load("DJANGO_DEBUG", False)
 
-AUTH_USER_MODEL = "authUser.CustomUser"
-
-DEFAULT_USER_IS_ACTIVE = true_load("DJANGO_DEFAULT_USER_IS_ACTIVE", DEBUG)
+AUTH_USER_MODEL = "users.User"
 
 ALLOWED_HOSTS = list(
     map(str.strip, os.getenv("DJANGO_ALLOWED_HOSTS", "*").split(",")),
@@ -36,7 +34,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "authUser.apps.AuthUserConfig",
+    "users.apps.UsersConfig",
 ]
 
 MIDDLEWARE = [
@@ -59,7 +57,7 @@ ROOT_URLCONF = "kidsBackend.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -109,6 +107,12 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "static/"
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static_dev",
+]
+
+LOCALE_PATHS = (BASE_DIR / "locale",)
 
 LANGUAGES = [
     ("ru", _("Russian")),

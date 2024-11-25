@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="купить детские игрушки в Альметьевске,заказать детские игрушки,онлайн магазин детских игрушек">
+    <meta name="keywords" content="дети,игрушки,купить игрушки,детские игрушки,мальчики,девочки,малыши,онлан мазагин">
+    <link rel="shortcut icon" href="img/1.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/adaptive.css">
+    <link rel="stylesheet" href="css/dark-light.css">
+    <title>Дети</title>
+</head>
+
+<body>
+    <div class="wrapper">
+        <header class="header">
+            <div class="header__container">
+                <div class="header__logo"><a href="index.html"><img id="logo_img" src="img/мишка.png"
+                            alt="logo">ДЕТИ</a>
+                </div>
+                <nav>
+                    <ul class="sidebar">
+                        <li class="hide" onclick=closeSidebar()><a href="#"></i><i class="fa-solid fa-x"></i></a></li>
+                        <li class="hide"><a href="gallery.html">Фотогалерея</a></li>
+                        <li class="hide"><a href="catalog.html">Каталог товаров</a>
+                        </li>
+                        <li class="hide"><a href="reviews.html">Отзывы</a></li>
+                        <li class="hide" id="sideBarBtn"><a href="">Вход</a></li>
+                    </ul>
+                    <ul class="menu-bar">
+                        <li><a href="gallery.html">Фотогалерея</a></li>
+                        <li class="catalog" >Каталог товаров
+                            <ul class="htmlCss-sub-menu sub-menu">
+                                <li><a href="catalog.html?filter=All">Все товары</a></li>  
+                                <li><a href="catalog.html?filter=Male">Мальчикам</a></li>
+                                <li><a href="catalog.html?filter=Female">Девочкам</a></li>
+                                <li><a href="catalog.html?filter=Develop">Развитие</a></li>
+                                <li><a href="catalog.html?filter=Sets">Наборы</a></li>
+                                <li><a href="catalog.html?filter=Room">Для комнаты</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="reviews.html">Отзывы</a></li>
+                        <li class="vhod"><a href="">Вход</a></li>
+                    </ul>
+                </nav>
+                <div class="but-wrap">
+                    <li class="open ld" onclick=showSidebar()><a href="#" class="open"><i
+                                class="fa-solid fa-bars"></i></a>
+                    </li>
+                    <img src="img/dakr-theme.svg" alt="" class="ld" id="dark__theme">
+                </div>
+                <div id="modal" class="modal">
+                    <div class="modal-content">
+                        <span class="close-button">&times;</span>
+                        <div class="modal-tabs">
+                            <button class="tab-button active" data-tab="login">Вход</button>
+                            <button class="tab-button" data-tab="register">Регистрация</button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Login Form -->
+                            <form id="login-form" class="modal-form active" data-tab="login">
+                                <label for="login-email">Email:</label>
+                                <input type="email" id="login-email" name="email" required>
+                                <label for="login-password">Пароль:</label>
+                                <input type="password" id="login-password" name="password" required>
+                                <button type="submit">Войти</button>
+                            </form>
+                            <!-- Registration Form -->
+                            <form id="register-form" class="modal-form" data-tab="register">
+                                <label for="register-name">Имя:</label>
+                                <input type="text" id="register-name" name="name" required>
+                                <label for="register-email">Email:</label>
+                                <input type="email" id="register-email" name="email" required>
+                                <label for="register-password">Пароль:</label>
+                                <input type="password" id="register-password" name="password" required>
+                                <button type="submit">Зарегистрироваться</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <main>
+            <div class="video-bg">
+                <video src="video/play.mp4" type="video/mp4" autoplay muted loop></video>
+                <div class="effects"></div>
+                <div class="video-bg__content">
+                    <h1 class="homepage">Любимые<br>
+                        игрушки у тебя<br>
+                        дома</h1>
+                    <button><a href="catalog.html">Посмотреть товары</a></button>
+                </div>
+            </div>
+        </main>
+        <footer class="footer">
+            <div class="footer__container">
+                <div class="footer__top">
+                    <div class="footer__logo"><img src="img/logo2.png" alt="logo2"></div>
+                    <nav>
+                        <ul class="footer-menu-bar">
+                            <li><a href="gallery.html">Фотогалерея</a></li>
+                            <li><a href="catalog.html">Каталог товаров</a></li>
+                            <li><a href="reviews.html">Отзывы</a></li>
+                            
+                        </ul>
+                    </nav>
+                </div>
+                <div class="footer__bottom">
+                    <p class="prava">2021 Все права защищены.</p>
+                    <p>Сделал Erik Kamalov</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script>
+        // const logoImg = document.getElementById("logo_img");
+        function showSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.style.display = 'flex';
+        }
+        function closeSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.style.display = 'none';
+        }
+        let root = document.querySelector(':root');
+        let change = document.querySelector('#dark__theme');
+        let btndark = document.querySelector('#dark__theme');
+        btndark.addEventListener('click', () => {
+            btndark.style.background = 'white';
+        })
+        change.addEventListener('click', () => {
+            event.preventDefault();
+            root.classList.toggle('dark');
+            // logoImg.src = './img/logo2.png';
+        })
+
+        
+
+    </script>
+    <script src="js/script.js"></script>
+    <script src="js/menu-bar.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,120 @@
+{% load static %}
+{% load i18n %}
+
+<header class="header">
+  <div class="header__container">
+      <div class="header__logo"><a href="{% url 'homepage:main' %}"><img id="logo_img" src="{% static 'img/jerik/мишка.png' %}" alt="logo">ДЕТИ</a>
+      </div>
+      <nav>
+          <ul class="sidebar">
+            {% with view_name=request.resolver_match.view_name is_auth=request.user.is_authenticated %}
+              <li class="hide" onclick="closeSidebar()"><a href="#"><i class="fa-solid fa-x"></i></a></li>
+              <li class="hide"><a href="gallery.html">Фотогалерея</a></li>
+              <li class="hide"><a href="catalog.html">Каталог товаров</a>
+              </li>
+              <li class="hide"><a href="reviews.html">Отзывы</a></li>
+              {% if is_auth %}
+              {% if user.is_superuser %}
+                <li class="hide">
+                  <a class="" href="{% url 'admin:index' %}">
+                    {% trans "admin"|capfirst %}
+                  </a>
+                </li>
+              {% endif %}
+              <li class="hide">
+                <a class="" href="{% url 'users:profile' %}">
+                  Профиль
+                </a>
+              </li>
+              {% else %}
+              <li class="hide">
+                <a class="" href="{% url 'users:login' %}">
+                  Вход
+                </a>
+              </li>
+              <li class="hide">
+                <a class="" href="{% url 'users:signup' %}">
+                  Регистрация
+                </a>
+              </li>
+              {% endif %}
+            {% endwith %}
+          </ul>
+          <ul class="menu-bar">
+            {% with view_name=request.resolver_match.view_name is_auth=request.user.is_authenticated %}
+              <li><a href="gallery.html">Фотогалерея</a></li>
+              <li class="catalog">Каталог товаров
+                  <ul class="htmlCss-sub-menu sub-menu">
+                      <li><a href="catalog.html?filter=All">Все товары</a></li>
+                      <li><a href="catalog.html?filter=Male">Мальчикам</a></li>
+                      <li><a href="catalog.html?filter=Female">Девочкам</a></li>
+                      <li><a href="catalog.html?filter=Develop">Развитие</a></li>
+                      <li><a href="catalog.html?filter=Sets">Наборы</a></li>
+                      <li><a href="catalog.html?filter=Room">Для комнаты</a></li>
+                  </ul>
+              </li>
+              {% if is_auth %}
+              {% if user.is_superuser %}
+                <li class="">
+                  <a class="" href="{% url 'admin:index' %}">
+                    {% trans "admin"|capfirst %}
+                  </a>
+                </li>
+              {% endif %}
+              <li class="">
+                <a class="" href="{% url 'users:profile' %}">
+                  Профиль
+                </a>
+              </li>
+              {% else %}
+              <li class="">
+                <a class="" href="{% url 'users:login' %}">
+                  Вход
+                </a>
+              </li>
+              <li class="">
+                <a class="" href="{% url 'users:signup' %}">
+                  Регистрация
+                </a>
+              </li>
+              {% endif %}
+            {% endwith %}
+          </ul>
+      </nav>
+      <div class="but-wrap">
+          <li class="open ld" onclick="showSidebar()"><a href="#" class="open"><i class="fa-solid fa-bars"></i></a>
+          </li>
+          <img src="{% static 'img/jerik/dakr-theme.svg' %}" alt="" class="ld" id="dark__theme">
+      </div>
+      <div id="modal" class="modal">
+          <div class="modal-content">
+              <span class="close-button">×</span>
+              <div class="modal-tabs">
+                  <button class="tab-button active" data-tab="login">Вход</button>
+                  <button class="tab-button" data-tab="register">Регистрация</button>
+              </div>
+              <div class="modal-body">
+                  <!-- Login Form -->
+                  <form id="login-form" class="modal-form active" data-tab="login">
+                      <label for="login-email">Email:</label>
+                      <input type="email" id="login-email" name="email" required="">
+                      <label for="login-password">Пароль:</label>
+                      <input type="password" id="login-password" name="password" required="">
+                      <button type="submit">Войти</button>
+                  </form>
+                  <!-- Registration Form -->
+                  <form id="register-form" class="modal-form" data-tab="register">
+                      <label for="register-name">Имя:</label>
+                      <input type="text" id="register-name" name="name" required="">
+                      <label for="register-email">Email:</label>
+                      <input type="email" id="register-email" name="email" required="">
+                      <label for="register-password">Пароль:</label>
+                      <input type="password" id="register-password" name="password" required="">
+                      <button type="submit">Зарегистрироваться</button>
+                  </form>
+              </div>
+          </div>
+      </div>
+  </div>
+</header>
+
