@@ -16,10 +16,6 @@ class UserManager(django.contrib.auth.models.UserManager):
 
 
 class User(AbstractUser):
-    def get_path_image(self, filename):
-        ext = Path(filename).suffix
-        return f"users/{self.id}/avatar{ext}"
-
     objects = UserManager()
 
     username = django.db.models.CharField(
@@ -41,29 +37,13 @@ class User(AbstractUser):
         unique=True,
     )
 
-    bio = django.db.models.TextField(
-        _("biography"),
-        max_length=4000,
-        help_text=_("bio_field_help"),
-        blank=True,
-        null=True,
-    )
-
     birthday = django.db.models.DateField(
         _("birthday"),
         help_text=_("birthday_field_help"),
         validators=[users.validators.birthday_validator],
         null=True,
-        blank=True,
-    )
-
-    # avatar = sorl.thumbnail.ImageField(
-    #     _("avatar"),
-    #     help_text=_("avatar_field_help"),
-    #     upload_to=get_path_image,
-    #     null=True,
-    #     blank=True,
-    # )
+            blank=True,
+        )
 
     def __str__(self):
         return f"Профиль пользователя {self.username}"

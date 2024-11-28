@@ -1,97 +1,130 @@
-import django.conf
-import django.contrib.auth
-import django.contrib.auth.mixins
-import django.contrib.messages
-import django.core.mail
-import django.core.signing
-import django.db.models
-import django.forms
-import django.http
-import django.template.loader
-import django.urls
 from django.utils.translation import gettext_lazy as _
-import django.views.generic
-
-import users.forms
-import users.models
-
-
-__all__ = []
-
-
-class ProfileEditFormView(django.views.generic.UpdateView):
-    success_message = _("profile_edit_success")
-    form_class = users.forms.ProfileEditForm
-    template_name = "users/profile_edit.html"
-    success_url = django.urls.reverse_lazy("users:profile-current")
-
-    def get_object(self, *args, **kwargs):
-        return self.request.user
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.generics import CreateAPIView
+from users.models import User
+from users.serializer import RegisterSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from users.serializer import UserListSerializer
 
 
-class SignupFormView(django.views.generic.FormView):
-    redirect_authenticated_user = True
-    form_class = users.forms.SignUpForm
-    template_name = "users/signup.html"
-    success_url = django.urls.reverse_lazy("users:login")
+class UserLoginAPIView(TokenObtainPairView):
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
 
-    def dispatch(self, request, *args, **kwargs):
-        if (
-            self.redirect_authenticated_user
-            and self.request.user.is_authenticated
-        ):
-            redirect_to = self.get_success_url()
-            if redirect_to == self.request.path:
-                raise ValueError(
-                    "Redirection loop for authenticated user detected. "
-                    "Check that your LOGIN_REDIRECT_URL doesnt point "
-                    "to a login page.",
-                )
-
-            return django.http.HttpResponseRedirect(redirect_to)
-
-        return super().dispatch(request, *args, **kwargs)
-
-    def form_valid(self, form):
-        print("form valid")
-        user = form.save()
-        django.contrib.auth.login(self.request, user)
-
-        # django.contrib.messages.success(
-        #     self.request,
-        #     _("message_signup_success"),
-        # )
-        return super().form_valid(form)
+        return Response({"tokens": response.data}, status=response.status_code)
 
 
-class ProfileTemplateView(
-    django.contrib.auth.mixins.LoginRequiredMixin,
-    django.views.generic.TemplateView,
-):
-    template_name = "users/profile.html"
+class UserRegisterAPIView(APIView):
+    def post(self, request):
+        data = request.data
+        username = data.get('username')
+        password = data.get('password')
+        email = data.get('email')
+        birthday = data.get('birthday')
 
-    def get_context_data(self, **kwargs):
-        user = self.request.user
-        context = super().get_context_data(**kwargs)
-        context["user"] = user
-        return context
+        # Проверка обязательных полей
+        if not username or not password or not email or not birthday:
+            return Response({"message": "Все поля обязательны для заполнения."}, status=status.HTTP_400_BAD_REQUEST)
 
-
-class ProfileDetailView(django.views.generic.DetailView):
-    template_name = "users/profile.html"
-    queryset = users.models.User.objects.all()
-
-
-class UserDeleteView(
-    django.contrib.auth.mixins.LoginRequiredMixin,
-    django.views.generic.RedirectView,
-):
-    url = django.urls.reverse_lazy("homepage:main")
-
-    def get(self, request, *args, **kwargs):
-        request.user.delete()
-        return super().get(request, *args, **kwargs)
+        # Проверка уникальности username
+        if User.objects.filter(username=username).exists():
+            return Response({"message": "Пользователь с таким ником уже существует."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Создание пользователя
+        User.objects.create_user(username=username, email=email, password=password, birthday=birthday)
+        
+        return Response({"message": "Пользователь успешно создан"}, status=status.HTTP_201_CREATED)
 
 
-class UserListView(django.views.generic.ListView):
-    queryset = users.models.User.objects.all()
+class UserProfileAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        print(request.headers)
+        print(request.user)
+        print(request.auth)
+        user = request.user
+        return Response({
+            "username": user.username,
+            "email": user.email
+        }, status=status.HTTP_200_OK)
+
+
+class UserSignupAPIView(CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = RegisterSerializer
+
+
+class UserListView(APIView):
+    def get(self, request):
+        users = User.objects.all()
+        serializer = UserListSerializer(users, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class UserDeleteAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, user_id):
+        try:
+            user = User.objects.get(id=user_id)
+            
+            # Проверка прав доступа (например, только администраторы могут удалять других пользователей)
+            if not request.user.is_staff and user != request.user:  # Убедитесь, что только администраторы могут удалять других пользователей
+                return Response({"message": "У вас нет прав для удаления этого пользователя."}, status=status.HTTP_403_FORBIDDEN)
+
+            user.delete()
+            return Response({"message": "Пользователь успешно удалён."}, status=status.HTTP_204_NO_CONTENT)
+
+        except User.DoesNotExist:
+            return Response({"message": "Пользователь не найден."}, status=status.HTTP_404_NOT_FOUND)
+
+
+class UserUpdateAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, user_id):
+        try:
+            user = User.objects.get(id=user_id)
+
+            # Проверка прав доступа (например, только администраторы могут обновлять других пользователей)
+            if not request.user.is_staff and user != request.user:
+                return Response({"message": "У вас нет прав для обновления этого пользователя."}, status=status.HTTP_403_FORBIDDEN)
+
+            # Обновление полей пользователя
+            for attr, value in request.data.items():
+                setattr(user, attr, value)
+            user.save()
+
+            return Response({"message": "Пользователь успешно обновлён."}, status=status.HTTP_200_OK)
+
+        except User.DoesNotExist:
+            return Response({"message": "Пользователь не найден."}, status=status.HTTP_404_NOT_FOUND)
+
+# class ProfileTemplateView(LoginRequiredMixin, TemplateView):
+#     template_name = "users/profile.html"
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context["user"] = self.request.user
+#         return context
+
+
+# class ProfileDetailView(DetailView):
+#     template_name = "users/profile.html"
+#     queryset = users.models.User.objects.all()
+
+
+# class UserDeleteView(LoginRequiredMixin, RedirectView):
+#     url = reverse_lazy("homepage:main")
+
+#     def get(self, request, *args, **kwargs):
+#         request.user.delete()
+#         return super().get(request, *args, **kwargs)
+
+
+# class UserListView(ListView):
+#     queryset = users.models.User.objects.all()

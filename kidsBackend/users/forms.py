@@ -47,6 +47,4 @@ class ProfileEditForm(django.contrib.auth.forms.UserChangeForm):
             users.models.User.username.field.name,
             users.models.User.first_name.field.name,
             users.models.User.last_name.field.name,
-            users.models.User.birthday.field.name,
-            users.models.User.bio.field.name,
         ]

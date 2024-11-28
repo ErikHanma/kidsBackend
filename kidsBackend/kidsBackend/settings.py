@@ -1,19 +1,16 @@
+import datetime
 import os
 import pathlib
-
-
-import django.urls
-from django.utils.translation import gettext_lazy as _
 import dotenv
+from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 
-
+# Загрузка переменных из .env файла
 dotenv.load_dotenv()
 
-
-def true_load(value: str, defoult: bool) -> bool:
-    env_value = os.getenv(value, str(defoult)).lower()
+def true_load(value: str, default: bool) -> bool:
+    env_value = os.getenv(value, str(default)).lower()
     return env_value in ("", "true", "yes", "1", "y")
-
 
 BASE_DIR = pathlib.Path(__file__).resolve().parent.parent
 
@@ -21,11 +18,11 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "ABOBA")
 
 DEBUG = true_load("DJANGO_DEBUG", False)
 
+# Настройка модели пользователя
 AUTH_USER_MODEL = "users.User"
 
-ALLOWED_HOSTS = list(
-    map(str.strip, os.getenv("DJANGO_ALLOWED_HOSTS", "*").split(",")),
-)
+# Разрешенные хосты
+ALLOWED_HOSTS = list(map(str.strip, os.getenv("DJANGO_ALLOWED_HOSTS", "*").split(",")))
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -34,8 +31,26 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "users.apps.UsersConfig",
+    "users.apps.UsersConfig",  # Приложение users
+    "rest_framework",  # Django Rest Framework
+    "rest_framework_simplejwt",  # JWT Authentication
 ]
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=30),
+    'SIGNING_KEY': SECRET_KEY,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',  # должен быть HTTP_ перед названием и капсом все
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -80,37 +95,16 @@ DATABASES = {
 }
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth."
-        "password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth."
-        "password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth."
-        "password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth."
-        "password_validation.NumericPasswordValidator",
-    },
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "UTC"
-
 USE_I18N = True
-
 USE_TZ = True
-
-STATIC_URL = "static/"
-
-STATICFILES_DIRS = [
-    BASE_DIR / "static_dev",
-]
 
 LOCALE_PATHS = (BASE_DIR / "locale",)
 
@@ -119,14 +113,13 @@ LANGUAGES = [
     ("en", _("English")),
 ]
 
-LOGIN_URL = django.urls.reverse_lazy("users:login")
-LOGIN_REDIRECT_URL = django.urls.reverse_lazy("homepage:main")
-LOGOUT_REDIRECT_URL = django.urls.reverse_lazy("homepage:main")
+LOGIN_URL = reverse_lazy("users:login")
+LOGIN_REDIRECT_URL = reverse_lazy("homepage:main")
+LOGOUT_REDIRECT_URL = reverse_lazy("homepage:main")
 
+STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR.parent / "static"
-
-MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"
-
+MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

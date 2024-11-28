@@ -1,65 +1,29 @@
-from django.contrib.auth import views
-from django.contrib.auth.forms import (
-    AuthenticationForm
+from django.urls import path
+from users.views import UserDeleteAPIView, UserUpdateAPIView, UserListView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
+from users.views import (
+    UserLoginAPIView,
+    UserSignupAPIView,
+    UserRegisterAPIView,
+    UserProfileAPIView,
 )
-
-from django.urls import path, reverse_lazy
-
-import users.forms
-import users.views
-
-__all__ = []
-
 
 app_name = "users"
 
 urlpatterns = [
-    path(
-        "login/",
-        views.LoginView.as_view(
-            template_name="users/login.html",
-            authentication_form=users.forms.custom_auth_form(
-                AuthenticationForm,
-            ),
-            redirect_authenticated_user=True,
-        ),
-        name="login",
-    ),
-    path(
-        "logout/",
-        views.LogoutView.as_view(
-            template_name="users/logout.html",
-        ),
-        name="logout",
-    ),
-    path(
-        "register/",
-        users.views.SignupFormView.as_view(),
-        name="signup",
-    ),
-    path(
-        "user_list/",
-        users.views.UserListView.as_view(),
-        name="user_list",
-    ),
-    path(
-        "<int:pk>/",
-        users.views.ProfileDetailView.as_view(),
-        name="user_detail",
-    ),
-    path(
-        "profile/",
-        users.views.ProfileTemplateView.as_view(),
-        name="profile",
-    ),
-    path(
-        "profile/edit/",
-        users.views.ProfileEditFormView.as_view(),
-        name="profile_edit",
-    ),
-    path(
-        "profile/delete/",
-        users.views.UserDeleteView.as_view(),
-        name="profile_delete",
-    ),
+    path('login/', UserLoginAPIView.as_view(), name='login'),
+    path('register/', UserRegisterAPIView.as_view(), name='signup'),
+    # path('register/', UserSignupAPIView.as_view(), name='signup'),
+    path('profile/', UserProfileAPIView.as_view(), name='profile'),
+
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('token/obtain/', TokenObtainPairView.as_view(), name='token_obtain'),
+    path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+    path('users/delete/<int:user_id>/', UserDeleteAPIView.as_view(), name='user-delete'),
+    path('users/update/<int:user_id>/', UserUpdateAPIView.as_view(), name='user-update'),
+    path('users/', UserListView.as_view(), name='user-list'),
+    # path('user_list/', UserListCreateAPIView.as_view(), name='user_list'),
+    # path('<int:pk>/', UserRetrieveUpdateDestroyAPIView.as_view(), name='user_detail'),
+    # path('profile/edit/', UserProfileEditAPIView.as_view(), name='profile_edit'),
+    # path('profile/delete/', UserProfileDeleteAPIView.as_view(), name='profile_delete'),
 ]
