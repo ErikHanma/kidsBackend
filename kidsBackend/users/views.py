@@ -8,6 +8,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from users.serializer import UserListSerializer
+import logging
 
 
 class UserLoginAPIView(TokenObtainPairView):
@@ -59,11 +60,18 @@ class UserSignupAPIView(CreateAPIView):
     serializer_class = RegisterSerializer
 
 
+
+
 class UserListView(APIView):
+    """
+    Получение списка всех пользователей.
+    """
     def get(self, request):
         users = User.objects.all()
-        serializer = UserListSerializer(users, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        users_data = [{"id": user.id, "username": user.username, "email": user.email} for user in users]
+        return Response(users_data, status=status.HTTP_200_OK)
+
+
 
 class UserDeleteAPIView(APIView):
     permission_classes = [IsAuthenticated]

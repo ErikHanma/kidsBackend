@@ -6,6 +6,7 @@ from users.views import (
     UserSignupAPIView,
     UserRegisterAPIView,
     UserProfileAPIView,
+    UserListView
 )
 
 app_name = "users"
@@ -15,7 +16,6 @@ urlpatterns = [
     path('register/', UserRegisterAPIView.as_view(), name='signup'),
     # path('register/', UserSignupAPIView.as_view(), name='signup'),
     path('profile/', UserProfileAPIView.as_view(), name='profile'),
-
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token/obtain/', TokenObtainPairView.as_view(), name='token_obtain'),
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),

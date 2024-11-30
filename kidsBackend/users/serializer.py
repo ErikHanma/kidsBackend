@@ -32,4 +32,5 @@ class LoginSerializer(serializers.Serializer):
 class UserListSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email']  # Укажите только те поля, которые хотите отображать
+        fields = ['id', 'username', 'email']
+

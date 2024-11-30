@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate
 from users.models import User
 from users.serializers import UserSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated
 
 
 # Login API
@@ -62,3 +63,11 @@ class UserProfileDeleteAPIView(APIView):
     def delete(self, request, *args, **kwargs):
         request.user.delete()
         return Response({"message": "Profile deleted"}, status=status.HTTP_204_NO_CONTENT)
+
+class UserListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        users = User.objects.all()
+        serializer = UserListSerializer(users, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
