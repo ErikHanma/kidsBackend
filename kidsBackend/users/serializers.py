@@ -9,4 +9,9 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # Вы можете добавить дополнительную логику для создания пользователя, если необходимо
         return User.objects.create_user(**validated_data)
-    
+
+
+class UserListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email']

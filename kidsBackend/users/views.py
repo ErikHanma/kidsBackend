@@ -10,6 +10,7 @@ from django.contrib.auth import get_user_model
 
 from users.models import User
 from users.serializer import UserSerializer, RegisterSerializer
+import logging
 
 
 class UserLoginAPIView(TokenObtainPairView):
@@ -22,26 +23,6 @@ class UserLoginAPIView(TokenObtainPairView):
 class UserRegisterAPIView(rest_framework.generics.CreateAPIView):
     serializer_class = RegisterSerializer
     queryset = User.objects.all()
-
-    # def post(self, request):
-    #     data = request.data
-    #     username = data.get('username')
-    #     password = data.get('password')
-    #     email = data.get('email')
-    #     birthday = data.get('birthday')
-
-    #     # Проверка обязательных полей
-    #     if not username or not password or not email or not birthday:
-    #         return Response({"message": "Все поля обязательны для заполнения."}, status=status.HTTP_400_BAD_REQUEST)
-
-    #     # Проверка уникальности username
-    #     if User.objects.filter(username=username).exists():
-    #         return Response({"message": "Пользователь с таким ником уже существует."}, status=status.HTTP_400_BAD_REQUEST)
-        
-    #     # Создание пользователя
-    #     User.objects.create_user(username=username, email=email, password=password, birthday=birthday)
-        
-    #     return Response({"message": "Пользователь успешно создан"}, status=status.HTTP_201_CREATED)
 
 
 class UserProfileAPIView(APIView):
@@ -56,6 +37,23 @@ class UserProfileAPIView(APIView):
 
 
 class UserListAPIView(rest_framework.generics.ListAPIView):
+class UserSignupAPIView(CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = RegisterSerializer
+
+
+class UserListView(APIView):
+    """
+    Получение списка всех пользователей.
+    """
+    def get(self, request):
+        users = User.objects.all()
+        users_data = [{"id": user.id, "username": user.username, "email": user.email} for user in users]
+        return Response(users_data, status=status.HTTP_200_OK)
+
+
+
+class UserDeleteAPIView(APIView):
     permission_classes = [IsAuthenticated]
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer

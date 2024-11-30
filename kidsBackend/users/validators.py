@@ -20,3 +20,10 @@ def birthday_validator(value):
         raise django.core.exceptions.ValidationError(
             _("birthday_validation_error"),
         )
+    
+def email_validator(value):
+    if not re.match(r"[^@]+@[^@]+\.[^@]+", value):
+        raise ValidationError(
+            _('Enter a valid email address.'),
+            params={'value': value},
+        )

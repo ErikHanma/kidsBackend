@@ -49,7 +49,7 @@ class UserListSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username', 'email']
 
-
+        
 class UserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField()
     
