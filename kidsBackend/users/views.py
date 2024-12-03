@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from users.serializer import UserListSerializer
 from django.contrib.auth import get_user_model
+from rest_framework.generics import CreateAPIView
 
 from users.models import User
 from users.serializer import UserSerializer, RegisterSerializer
@@ -36,7 +37,7 @@ class UserProfileAPIView(APIView):
         }, status=status.HTTP_200_OK)
 
 
-class UserListAPIView(rest_framework.generics.ListAPIView):
+# class UserListAPIView(rest_framework.generics.ListAPIView):
 class UserSignupAPIView(CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer

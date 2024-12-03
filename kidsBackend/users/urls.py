@@ -5,8 +5,10 @@ from users.views import (
     UserRegisterAPIView,
     UserProfileAPIView,
     UserDetailUpdateDeleteAPIView,
-    UserListAPIView,
-    UserListView
+    UserListView,
+    UserListView,
+    UserDeleteAPIView,
+    # UserUpdateAPIView
 )
 
 app_name = "users"
@@ -17,12 +19,12 @@ urlpatterns = [
     path('profile/', UserProfileAPIView.as_view(), name='profile'),
     path('users/delete/<int:user_id>/', UserDetailUpdateDeleteAPIView.as_view(), name='user-delete'),
     path('users/update/<int:user_id>/', UserDetailUpdateDeleteAPIView.as_view(), name='user-update'),
-    path('users/', UserListAPIView.as_view(), name='user-list'),
+    path('users/', UserListView.as_view(), name='user-list'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token/obtain/', TokenObtainPairView.as_view(), name='token_obtain'),
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('users/delete/<int:user_id>/', UserDeleteAPIView.as_view(), name='user-delete'),
-    path('users/update/<int:user_id>/', UserUpdateAPIView.as_view(), name='user-update'),
+    # path('users/update/<int:user_id>/', UserUpdateAPIView.as_view(), name='user-update'),
     path('users/', UserListView.as_view(), name='user-list'),
     path('user/<int:pk>/', UserDetailUpdateDeleteAPIView.as_view(), name='user_detail'),
 ]

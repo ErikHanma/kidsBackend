@@ -31,9 +31,11 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "users.apps.UsersConfig",  # Приложение users
-    "rest_framework",  # Django Rest Framework
-    "rest_framework_simplejwt",  # JWT Authentication
+    "users.apps.UsersConfig",
+    "rest_framework",
+    "rest_framework_simplejwt",
+    'products',
+    'orders',
 ]
 
 SIMPLE_JWT = {
@@ -62,7 +64,6 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-
 ROOT_URLCONF = "kidsBackend.urls"
 
 TEMPLATES = [
@@ -83,10 +84,21 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "kidsBackend.wsgi.application"
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'kids',
+        'USER': 'myuser',
+        'PASSWORD': '123',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
